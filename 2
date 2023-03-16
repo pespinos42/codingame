@@ -1,0 +1,134 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <json-c/json.h>
+#include <locale.h>
+#include <ctype.h>
+
+
+typedef struct stringArray {
+  int length;
+  char** items;
+} stringArray;
+
+/**
+ * @param protons_start The initial number of protons
+ * @param neutrons_start The initial number of neutrons
+ * @param protons_target The desired number of protons
+ * @param neutrons_target The desired number of neutrons
+ */
+stringArray solve(int protons_start, int neutrons_start, int protons_target, int neutrons_target) {
+  // Write your code here
+
+  int count_operations = 0;
+  int count_alpha = 0;
+  int count_proton = 0;
+  int count_neutron = 0;
+  int p = 0;
+  int q = 0;
+
+  while ((protons_start > protons_target) || (neutrons_start > neutrons_target))
+  {
+    count_alpha++;
+    protons_start -= 2;
+    neutrons_start -= 2;
+  }
+  printf("WHILE 1\n");
+
+  while (protons_start < protons_target)
+  {
+    count_proton++;
+    protons_start++;
+  }
+  
+  while (neutrons_start < neutrons_target)
+  {
+    count_neutron++;
+    neutrons_start++;
+  }
+
+  count_operations = count_alpha + count_proton + count_neutron;
+  stringArray string_array = {count_operations, malloc(sizeof(char*) * count_operations)};
+  // string_array.items[0] = "bar";
+  // string_array.items[1] = "hello world";
+  // string_array.items[2] = "hello world";
+
+  for(int i = 0; i<count_alpha; i++)
+  {
+    string_array.items[i] = "ALPHA";
+    p++;
+  }
+
+  for(int i = 0; i<count_proton; i++)
+  {
+    string_array.items[i+p] = "PROTON";
+    q++;
+  }
+
+  for(int i = 0; i<count_neutron; i++)
+  {
+    string_array.items[i+p+q] = "NEUTRON";
+  }
+
+  return string_array;
+
+}
+
+/* Ignore and do not change the code below */
+
+void trySolution(stringArray recipe) {
+  struct json_object *output_json;
+
+  output_json = json_object_new_array();
+  struct json_object* current_value;
+  for (int i = 0; i < recipe.length; i++) {
+    current_value = json_object_new_string(recipe.items[i]);
+    json_object_array_add(output_json, current_value);
+  }
+  printf("%s\n", json_object_to_json_string_ext(output_json, 0));
+  json_object_put(output_json);
+}
+
+int main () {
+  setlocale(LC_ALL, "en_US.UTF-8");
+  char *line;
+  size_t len = 0;
+
+  line = NULL;
+  getline(&line, &len, stdin);
+  struct json_object *parsed_json0 = json_tokener_parse(line);
+  free(line);
+  int protons_start;
+  protons_start = json_object_get_int(parsed_json0);
+
+  line = NULL;
+  getline(&line, &len, stdin);
+  struct json_object *parsed_json1 = json_tokener_parse(line);
+  free(line);
+  int neutrons_start;
+  neutrons_start = json_object_get_int(parsed_json1);
+
+  line = NULL;
+  getline(&line, &len, stdin);
+  struct json_object *parsed_json2 = json_tokener_parse(line);
+  free(line);
+  int protons_target;
+  protons_target = json_object_get_int(parsed_json2);
+
+  line = NULL;
+  getline(&line, &len, stdin);
+  struct json_object *parsed_json3 = json_tokener_parse(line);
+  free(line);
+  int neutrons_target;
+  neutrons_target = json_object_get_int(parsed_json3);
+
+  json_object_put(parsed_json0);
+  json_object_put(parsed_json1);
+  json_object_put(parsed_json2);
+  json_object_put(parsed_json3);
+  stringArray output = solve(protons_start, neutrons_start, protons_target, neutrons_target);
+
+  trySolution(output);
+}
+/* Ignore and do not change the code above */
