@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <json-c/json.h>
+#include <locale.h>
+#include <ctype.h>
+
+
+
+/**
+ * @param s1 the first line of the page, composed of uppercase letters only
+ * @param s2 the second line, composed of uppercase letters and of the same length as s1
+ * @return the decrypted message, created by alternating the letters of s1 and s2
+ */
+
+ int  ft_strlen(char *str)
+ {
+  int len = 0;
+
+  while (str[len])
+    len++;
+  return (len);
+ }
+
+char* decrypt(char* s1, char* s2) {
+  // Write your code here
+  char  *str;
+  int   p = 0;
+  int   q = 0;
+
+  str = malloc ((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof (*str));
+  if (!str)
+    return (NULL);
+
+  while (s1[p] && s2[p])
+  {
+    str[q] = s1[p];
+    q++;
+    str[q] = s2[p];
+    q++;
+    p++;
+  }
+  str[q] = '\0';
+  return str;
+}
+
+/* Ignore and do not change the code below */
+
+void trySolution(char* message) {
+  struct json_object *output_json;
+  output_json = json_object_new_string(message);
+  printf("%s\n", json_object_to_json_string_ext(output_json, 0));
+  json_object_put(output_json);
+}
+
+int main () {
+  setlocale(LC_ALL, "en_US.UTF-8");
+  char *line;
+  size_t len = 0;
+
+  line = NULL;
+  getline(&line, &len, stdin);
+  struct json_object *parsed_json0 = json_tokener_parse(line);
+  free(line);
+  char* s1;
+  char* json_string_tmp = malloc(sizeof(char) * (json_object_get_string_len(parsed_json0) + 1));
+  strcpy(json_string_tmp, json_object_get_string(parsed_json0));
+  s1 = json_string_tmp;
+
+  line = NULL;
+  getline(&line, &len, stdin);
+  struct json_object *parsed_json1 = json_tokener_parse(line);
+  free(line);
+  char* s2;
+  char* json_string_tmp_2 = malloc(sizeof(char) * (json_object_get_string_len(parsed_json1) + 1));
+  strcpy(json_string_tmp_2, json_object_get_string(parsed_json1));
+  s2 = json_string_tmp_2;
+
+  json_object_put(parsed_json0);
+  json_object_put(parsed_json1);
+  char* output = decrypt(s1, s2);
+
+  trySolution(output);
+}
+/* Ignore and do not change the code above */
